@@ -1,0 +1,17 @@
+C:\Users\admin\source\repos\acme-payroll\Payroll\bin\Debug\net5.0\Payroll.exe
+C:\Users\admin\source\repos\acme-payroll\Payroll\bin\Debug\net5.0\Payroll.deps.json
+C:\Users\admin\source\repos\acme-payroll\Payroll\bin\Debug\net5.0\Payroll.runtimeconfig.json
+C:\Users\admin\source\repos\acme-payroll\Payroll\bin\Debug\net5.0\Payroll.runtimeconfig.dev.json
+C:\Users\admin\source\repos\acme-payroll\Payroll\bin\Debug\net5.0\Payroll.dll
+C:\Users\admin\source\repos\acme-payroll\Payroll\bin\Debug\net5.0\ref\Payroll.dll
+C:\Users\admin\source\repos\acme-payroll\Payroll\bin\Debug\net5.0\Payroll.pdb
+C:\Users\admin\source\repos\acme-payroll\Payroll\obj\Debug\net5.0\Payroll.csproj.AssemblyReference.cache
+C:\Users\admin\source\repos\acme-payroll\Payroll\obj\Debug\net5.0\Payroll.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\admin\source\repos\acme-payroll\Payroll\obj\Debug\net5.0\Payroll.AssemblyInfoInputs.cache
+C:\Users\admin\source\repos\acme-payroll\Payroll\obj\Debug\net5.0\Payroll.AssemblyInfo.cs
+C:\Users\admin\source\repos\acme-payroll\Payroll\obj\Debug\net5.0\Payroll.csproj.CoreCompileInputs.cache
+C:\Users\admin\source\repos\acme-payroll\Payroll\obj\Debug\net5.0\Payroll.dll
+C:\Users\admin\source\repos\acme-payroll\Payroll\obj\Debug\net5.0\ref\Payroll.dll
+C:\Users\admin\source\repos\acme-payroll\Payroll\obj\Debug\net5.0\Payroll.pdb
+C:\Users\admin\source\repos\acme-payroll\Payroll\obj\Debug\net5.0\Payroll.genruntimeconfig.cache
+C:\Users\admin\source\repos\acme-payroll\Payroll\bin\Debug\net5.0\Payroll.Data\Data.txt
