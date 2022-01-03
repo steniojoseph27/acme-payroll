@@ -8,142 +8,159 @@ namespace Payroll
 {
     class Program
     {
+        private static readonly TimeSpan _midNight = TimeSpan.Parse("23:00:00");
+
         static void Main(string[] args)
         {
             string filePath = @"Payroll.Data/Data.txt";
-            ReadFile(filePath);
+            //GetEmployee(filePath);
+            ////GetDay(filePath);
+            GetHoursWorked(filePath);
+            //CalculateRate(day, startHour, endHour);
         }
 
-        public static void ReadFile(string filePath)
+        public static string[] CalulateRateHour(string filePath)
         {
+            string day = "";
+            TimeSpan startHour = new TimeSpan();
+            TimeSpan endHour = new TimeSpan();
+
             if (System.IO.File.Exists(filePath))
             {
-                int workedHour = 0;
+                
+                //var workedHour = 0;
+                var midNight = TimeSpan.Parse("23:00:00");
 
                 foreach (var line in File.ReadAllLines(filePath))
                 {
                     var result = line.Split('=', ',');
-
                     var employee = new Employee();
                     employee.Name = result[0];
 
                     foreach (var item in result.Skip(1))
                     {
-                        var day = item[..2];
-                        var fromHour = int.Parse(item[2..4]);
-                        var toHour = int.Parse(item[8..10]);
-
-                        workedHour = toHour - fromHour;
-                        Console.WriteLine($"The amount to pay {employee.Name} is: {workedHour} hours");
+                        day = item[..2];
+                        var fromHour = TimeSpan.TryParseExact(item[2..4], "%h", null, out startHour);
+                        var toHour = TimeSpan.TryParseExact(item[8..10], "%h", null, out endHour);
                     }
                 }
             }
+            return new[] { day.ToString(), startHour.ToString(), endHour.ToString() };
         }
 
-        bool checkWorkDay(WorkDay workDay)
+        public static string GetEmployee(string filePath)
         {
-            return ((workDay & (WorkDay.MO | WorkDay.TU | WorkDay.WE | WorkDay.TH | WorkDay.FR)) != 0);
-        }
+            var employee = new Employee();
 
-        bool checkWeekend(Weekend weekend)
-        {
-            return ((weekend & (Weekend.SA | Weekend.SU)) != 0);
-        }
-
-        public static string GetShortDayName(string line)
-        {
-            var day = line[..2];
-            if (checkWorkDay)
+            foreach (var line in File.ReadAllLines(filePath))
             {
-                if (!checkWeekend())
+                var result = line.Split('=', '-');
+                employee.Name = result[0];
+                //Console.WriteLine(employee.Name = result[0]);
+            }
+
+            return employee.Name;
+        }
+
+
+        public static string GetDay(string filePath)
+        {
+            var dayWorked = "";
+
+            if (System.IO.File.Exists(filePath))
+            {
+                foreach (var line in File.ReadAllLines(filePath))
                 {
-                    Console.WriteLine("Error obtaining day name");
+                    var result = line.Split('=', ',');
+
+                    foreach (var item in result.Skip(1))
+                    {
+                        if (!Enum.IsDefined(typeof(WorkDay), item[..2]))
+                        {
+                            if (!Enum.IsDefined(typeof(Weekend), item[..2]))
+                            {
+                                Console.WriteLine("Please check the file data.");
+                                return "";
+                            }
+                        }
+                        
+                        dayWorked = item[..2];
+                        //Console.WriteLine(dayWorked = item[..2]);
+                    }
                 }
             }
-            return day;
+
+            return dayWorked;
         }
 
-        public static object GetEmployeeName(string line)
+        public static string[] GetHoursWorked(string filePath)
         {
-            var employeeName = line.Split("=")[0];
-            return employeeName;
-        }
+            string day = "";
+            TimeSpan startHour = new TimeSpan();
+            TimeSpan endHour = new TimeSpan();
 
-        public static object GetDayTimes(string dayWorked)
-        {
-            var timesWorked = dayWorked[2];
-            return timesWorked;
-        }
-
-        public static string GetHoursMinutes(string hours)
-        {
-            try
+            if (System.IO.File.Exists(filePath))
             {
-                var fromHours = hours.Split('-');
-                var toHours = hours.Split('-');
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Error obtaining hours and minutes times");
-            }
-            return (fromHours, toHours);
-        }
-
-        public static object GetWeekWorked(string line)
-        {
-            string WeekWorked;
-            try
-            {
-                WeekWorked = line.Split("=")[1];
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Error obtaining week worked");
-            }
-            return WeekWorked;
-        }
-
-        // Pass hours from string format HH:MM to hours decimal
-        public static object ConvertHoursToDecimal(string time)
-        {
-            try
-            {
-                var h = time.Split(':');
-                var m = time.Split(':');
-                //m = m("\n"); // string.Replace
-                // These validations move to _check_hours()
-                if (m.Count > 2)
+                foreach (var line in File.ReadAllLines(filePath))
                 {
-                    Console.WriteLine("Error in length of minutes");
+                    var result = line.Split('=', ',');
+
+                    foreach (var item in result.Skip(1))
+                    {
+                        day = item[..2];
+                        startHour = TimeSpan.Parse(item[2..7]);
+                        endHour = TimeSpan.Parse(item[8..13]);
+
+                        //Console.WriteLine(CalculateRate(day, startHour, endHour));
+                        //Console.WriteLine($"{item[2..7]} - {item[8..13]}");
+                    }
                 }
-                if (Convert.ToInt32(m) > 60)
-                {
-                    Console.WriteLine("Error in minutes times");
-                }
-                var hours = Convert.ToInt32(h) + Convert.ToInt32(m) / 60;
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Error parsing hours");
-            }
-            return hours;
+
+            return new[] { day, startHour.ToString(), endHour.ToString() };
         }
 
-        public static object ConvertHoursToString(string hour)
+        public static int CalculateRate(string day, TimeSpan startHour, TimeSpan endHour)
         {
-            var h = Convert.ToInt32(hours);
-            var m = Convert.ToInt32((hours - h) * 60);
-            h = h.ToString();
-            m = m.ToString();
-            if (h == "0")
+            int shiftRate = 0;
+
+            if (Enum.IsDefined(typeof(WorkDay), day))
             {
-                h += "0";
+                if (startHour >= TimeSpan.Parse(Shift.FirstShiftStart) && endHour <= TimeSpan.Parse(Shift.FirstShiftEnd))
+                {
+                    shiftRate = ((int)endHour.TotalHours - (int)startHour.TotalHours) * Rate.WeekFirstShift;
+                    Console.WriteLine(((int)endHour.TotalHours - (int)startHour.TotalHours) * Rate.WeekFirstShift);
+                }
+                else if (startHour >= TimeSpan.Parse(Shift.SecondShiftStart) && endHour <= TimeSpan.Parse(Shift.SecondShiftEnd))
+                {
+                    shiftRate = ((int)endHour.TotalHours - (int)startHour.TotalHours) * Rate.WeekSecondShift;
+                    Console.WriteLine(((int)endHour.TotalHours - (int)startHour.TotalHours) * Rate.WeekSecondShift);
+                }
+                else if (startHour >= TimeSpan.Parse(Shift.ThirdShiftStart) && endHour <= _midNight + TimeSpan.Parse("01:00"))
+                {
+                    shiftRate = ((int)endHour.TotalHours - (int)startHour.TotalHours) * Rate.WeekThirdShift;
+                    Console.WriteLine(((int)endHour.TotalHours - (int)startHour.TotalHours) * Rate.WeekThirdShift);
+                }
             }
-            if (m == "0")
+            else if (Enum.IsDefined(typeof(Weekend), day))
             {
-                m += "0";
+                if (startHour >= TimeSpan.Parse(Shift.FirstShiftStart) && endHour <= TimeSpan.Parse(Shift.FirstShiftEnd))
+                {
+                    shiftRate = ((int)endHour.TotalHours - (int)startHour.TotalHours) * Rate.WeekendFirstShift;
+                    Console.WriteLine(((int)endHour.TotalHours - (int)startHour.TotalHours) * Rate.WeekendFirstShift);
+                }
+                else if (startHour >= TimeSpan.Parse(Shift.SecondShiftStart) && endHour <= TimeSpan.Parse(Shift.SecondShiftEnd))
+                {
+                    shiftRate = ((int)endHour.TotalHours - (int)startHour.TotalHours) * Rate.WeekendSecondShift;
+                    Console.WriteLine(((int)endHour.TotalHours - (int)startHour.TotalHours) * Rate.WeekendSecondShift);
+                }
+                else if (startHour >= TimeSpan.Parse(Shift.ThirdShiftStart) && endHour <= _midNight + TimeSpan.Parse("01:00"))
+                {
+                    shiftRate = ((int)endHour.TotalHours - (int)startHour.TotalHours) * Rate.WeekendThirdShift;
+                    Console.WriteLine(((int)endHour.TotalHours - (int)startHour.TotalHours) * Rate.WeekendThirdShift);
+                }
             }
-            return "{h}:{m}";
+            return shiftRate;
         }
     }
 }
