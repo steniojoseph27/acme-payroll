@@ -13,6 +13,6 @@ namespace Payroll.PayrollDomain
         public static string SecondShiftStart { get; set; } = "09:01";
         public static string SecondShiftEnd { get; set; } = "18:00";
         public static string ThirdShiftStart { get; set; } = "18:01";
-        public static string ThirdShiftEnd { get; set; } = "00:00";
+        public static string ThirdShiftEnd { get; set; } = "23:59";
     }
 }
