@@ -1,14 +1,18 @@
 ﻿
 namespace Payroll.Payroll.Domain
 {
-    public enum Day
+    public enum WorkDay
     {
         MO,
         TU,
         WE,
         TH,
         FR,
+    }
+
+    public enum Weekend
+    {
         SA,
-        SU,
+        SU
     }
 }

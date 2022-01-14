@@ -8,7 +8,6 @@ namespace Payroll.PayrollDomain
 {
     public static class Rate
     {
-        // Shift rates
         public static int WeekFirstShift { get; set; } = 25;
         public static int WeekSecondShift { get; set; } = 15;
         public static int WeekThirdShift { get; set; } = 20;
